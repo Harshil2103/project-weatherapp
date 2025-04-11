@@ -2,22 +2,41 @@
 
 import { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../_utils/firebase';
+import { auth, db } from '../../_utils/firebase';
 import { useRouter } from 'next/navigation';
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function SignUpPage() {
   const router = useRouter();
+
   const [email, setEmail] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSignUp = async (e) => {
     e.preventDefault();
     setError('');
 
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      router.push('/dashboard'); // redirect after sign up
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+      // Optional: Save first & last name in Firestore
+      await setDoc(doc(db, 'users', userCredential.user.uid), {
+        email,
+        firstName,
+        lastName,
+        favorites: [],
+      });
+
+      router.push('/dashboard');
     } catch (err) {
       setError(err.message);
     }
@@ -29,23 +48,47 @@ export default function SignUpPage() {
 
       <form onSubmit={handleSignUp} className="w-full max-w-sm space-y-4">
         <input
+          type="text"
+          placeholder="First Name"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+          required
+          className="w-full p-2 border rounded"
+        />
+        <input
+          type="text"
+          placeholder="Last Name"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+          required
+          className="w-full p-2 border rounded"
+        />
+        <input
           type="email"
           placeholder="Email"
-          className="w-full p-2 border rounded"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          className="w-full p-2 border rounded"
         />
         <input
           type="password"
-          placeholder="Password"
-          className="w-full p-2 border rounded"
+          placeholder="Create Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          className="w-full p-2 border rounded"
+        />
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+          className="w-full p-2 border rounded"
         />
 
-        {error && <p className="text-red-500">{error}</p>}
+        {error && <p className="text-red-500 text-sm">{error}</p>}
 
         <button
           type="submit"
