@@ -96,7 +96,7 @@ export default function HomePage() {
     const interval = setInterval(() => {
       const newFact = facts[Math.floor(Math.random() * facts.length)];
       setFact(newFact);
-    }, 8000); // rotate every 8 seconds
+    }, 8000); 
 
     return () => clearInterval(interval);
   }, []);
@@ -177,7 +177,7 @@ export default function HomePage() {
 
   return (
     <main className="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-      {/* Left Sidebar */}
+      
       <aside className="space-y-4 pt-[56px]">
         <div className="p-4 border rounded bg-red-100">
           <h2 className="text-lg font-semibold mb-2">🔴 Severe Weather Alerts</h2>
@@ -208,7 +208,7 @@ export default function HomePage() {
         </div>
       </aside>
 
-      {/* Center Main Content */}
+      
       <section className="col-span-2">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold">Welcome, {userName || 'Clima'}</h1>
@@ -239,7 +239,7 @@ export default function HomePage() {
 
       
 
-      {/* Popular Cities Weather List */}
+      
       <div className="grid grid-cols-2 gap-4 mb-6">
         {['New York', 'London', 'Tokyo', 'Mumbai'].map((cityName) => (
           <PopularCityWeather key={cityName} city={cityName} />
