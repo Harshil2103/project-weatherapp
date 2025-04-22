@@ -34,7 +34,6 @@ export default function HomePage() {
   const [forecast, setForecast] = useState([]);
   const [error, setError] = useState('');
   const [recentSearches, setRecentSearches] = useState([]);
-
   const { user } = useAuth();
   const [userName, setUserName] = useState('');
   const [theme, setTheme] = useState('light');
@@ -172,7 +171,7 @@ export default function HomePage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      
+   
       <div
         className="absolute inset-0 z-0 bg-cover bg-center"
         style={{
@@ -182,17 +181,22 @@ export default function HomePage() {
         }}
       />
 
-      
-      <div className="relative z-10 bg-white/80 dark:bg-black/60 backdrop-blur-md min-h-screen">
+      <div className="relative z-10">
+       
+        <header className="w-full px-6 py-4 bg-white/70 dark:bg-black/50 shadow-md flex justify-between items-center">
+          <h1 className="text-xl font-bold text-blue-600 dark:text-white">🌤️ ClimaWeather</h1>
+          <span className="text-sm text-gray-700 dark:text-gray-300">Stay ahead of the skies</span>
+        </header>
+
         <main className="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
          
           <aside className="space-y-4">
             <div className="p-4 border rounded-lg bg-red-100 shadow-md">
-              <h2 className="text-lg font-semibold mb-2">🔴 Severe Weather Alerts</h2>
+              <h2 className="text-lg font-semibold mb-2">⚠️ Today's Alerts</h2>
               <p className="text-sm text-red-800">No current alerts.</p>
             </div>
             <div className="p-4 border rounded-lg bg-blue-50 shadow-md">
-              <h2 className="text-lg font-semibold mb-2">📊 Weekly Trend</h2>
+              <h2 className="text-lg font-semibold mb-2">📈 Weekly Weather Trends</h2>
               <p className="text-sm text-gray-700">Chart coming soon...</p>
             </div>
             <div className="p-4 border rounded-lg bg-green-50 shadow-md">
@@ -213,14 +217,15 @@ export default function HomePage() {
             </div>
           </aside>
 
+          
           <section className="col-span-2">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Welcome, {userName || 'Clima'}</h1>
               <button
                 onClick={toggleTheme}
-                className="bg-gray-800 dark:bg-white text-white dark:text-black px-4 py-2 rounded-md hover:opacity-90"
+                className="flex items-center gap-2 px-4 py-2 rounded-md bg-gray-800 dark:bg-white text-white dark:text-black shadow hover:scale-105 transition-transform"
               >
-                {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
+                {theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
               </button>
             </div>
 
@@ -228,7 +233,7 @@ export default function HomePage() {
               <input
                 type="text"
                 placeholder="Enter city name"
-                className="flex-grow px-4 py-2 border rounded-md"
+                className="flex-grow px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
               />
@@ -294,13 +299,15 @@ export default function HomePage() {
               </div>
             )}
 
-            <p className="mt-6 italic text-center text-gray-600 dark:text-gray-400">{fact}</p>
+            <p className="mt-6 text-center text-base text-gray-700 dark:text-gray-300 transition-all duration-300 italic">
+              🌈 Did you know? <span className="font-medium">{fact}</span>
+            </p>
           </section>
 
-         
-          <footer className="w-full col-span-3 bg-gray-100 dark:bg-gray-800 mt-10 py-4 px-6 rounded-xl shadow">
+          
+          <footer className="w-full col-span-3 bg-gray-100 dark:bg-gray-800 mt-10 py-4 px-6 rounded-xl shadow text-sm text-center text-gray-600 dark:text-gray-300">
             <h2 className="font-semibold text-sm mb-2 text-gray-700 dark:text-gray-300">🌍 Latest Weather News</h2>
-            <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+            <ul className="space-y-1">
               <li>
                 <a href="https://www.bbc.com/weather" target="_blank" className="hover:underline">Weather updates from BBC</a>
               </li>
@@ -308,9 +315,12 @@ export default function HomePage() {
                 <a href="https://edition.cnn.com/weather" target="_blank" className="hover:underline">Latest storm alerts from CNN</a>
               </li>
               <li>
-                <a href="https://www.accuweather.com/en/weather-news" target="_blank" className="hover:underline">Global weather – AccuWeather</a>
+                <a href="https://www.accuweather.com/en/weather-news" target="_blank" className="hover:underline">AccuWeather global updates</a>
               </li>
             </ul>
+            <p className="text-xs text-center text-gray-500 dark:text-gray-400 mt-4">
+              Made with ❤️ by Clima Team  {new Date().getFullYear()}
+            </p>
           </footer>
         </main>
       </div>
