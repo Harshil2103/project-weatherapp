@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../_utils/firebase';
-
+import { doc, getDoc } from 'firebase/firestore';
 
 function PopularCityWeather({ city }) {
   const [data, setData] = useState(null);
@@ -20,7 +20,7 @@ function PopularCityWeather({ city }) {
   const icon = isDay ? '☀️' : '🌙';
 
   return (
-    <div className="border rounded p-4 bg-blue-50 text-center">
+    <div className="border rounded-lg p-4 bg-blue-50 text-center shadow">
       <h4 className="font-bold text-sm mb-1">{data.location.name}</h4>
       <p className="text-sm">🌡 {data.current.temp_c}°C</p>
       <p className="text-lg">{icon}</p>
@@ -37,7 +37,6 @@ export default function HomePage() {
 
   const { user } = useAuth();
   const [userName, setUserName] = useState('');
-
   const [theme, setTheme] = useState('light');
 
   useEffect(() => {
@@ -57,9 +56,7 @@ export default function HomePage() {
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      setTheme(savedTheme);
-    }
+    if (savedTheme) setTheme(savedTheme);
   }, []);
 
   useEffect(() => {
@@ -96,7 +93,7 @@ export default function HomePage() {
     const interval = setInterval(() => {
       const newFact = facts[Math.floor(Math.random() * facts.length)];
       setFact(newFact);
-    }, 8000); // rotate every 8 seconds
+    }, 8000);
 
     return () => clearInterval(interval);
   }, []);
@@ -173,146 +170,151 @@ export default function HomePage() {
     );
   };
 
-  
-
   return (
-    <main className="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-      {/* Left Sidebar */}
-      <aside className="space-y-4 pt-[56px]">
-        <div className="p-4 border rounded bg-red-100">
-          <h2 className="text-lg font-semibold mb-2">🔴 Severe Weather Alerts</h2>
-          <p className="text-sm text-red-800"><span>No current alerts.</span></p>
-        </div>
-        <div className="p-4 border rounded bg-blue-50">
-          <h2 className="text-lg font-semibold mb-2">📊 Weekly Trend</h2>
-          <p className="text-sm text-gray-700"><span>Chart coming soon...</span></p>
-        </div>
-        <div className="p-4 border rounded bg-green-50">
-          <h2 className="text-lg font-semibold mb-2">🌧 Rain Probability</h2>
-          <p className="text-sm text-gray-700">Today: 20% chance of rain</p>
-        </div>
-
-        <div className="p-4 border rounded bg-yellow-50">
-          <h2 className="text-lg font-semibold mb-2">🔥 Hottest City</h2>
-          <p className="text-sm text-gray-700">Kuwait City — 44°C</p>
-        </div>
-
-        <div className="p-4 border rounded bg-blue-100">
-          <h2 className="text-lg font-semibold mb-2">❄️ Coldest Capital</h2>
-          <p className="text-sm text-gray-700">Ulaanbaatar — -12°C</p>
-        </div>
-
-        <div className="p-4 border rounded bg-purple-100">
-          <h2 className="text-lg font-semibold mb-2">💧 Most Humid Place</h2>
-          <p className="text-sm text-gray-700">Singapore — 95% humidity</p>
-        </div>
-      </aside>
-
-      {/* Center Main Content */}
-      <section className="col-span-2">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-bold">Welcome, {userName || 'Clima'}</h1>
-        
-      </div>
-
-      <div className="flex gap-2 mb-4">
-        <input
-          type="text"
-          placeholder="Enter city name"
-          className="flex-grow p-2 border rounded"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-        />
-        <button
-          onClick={() => fetchWeather()}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Search
-        </button>
-        <button
-          onClick={handleUseMyLocation}
-          className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
-        >
-          📍 Use My Location
-        </button>
-      </div>
-
+    <div className="relative min-h-screen overflow-hidden">
       
+      <div
+        className="absolute inset-0 z-0 bg-cover bg-center"
+        style={{
+          backgroundImage: "url('/banff2.jpeg')",
+          filter: 'blur(2.5px)',
+          transform: 'scale(1.02)',
+        }}
+      />
 
-      {/* Popular Cities Weather List */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        {['New York', 'London', 'Tokyo', 'Mumbai'].map((cityName) => (
-          <PopularCityWeather key={cityName} city={cityName} />
-        ))}
-      </div>
+      {/* Foreground overlay content */}
+      <div className="relative z-10 bg-white/80 dark:bg-black/60 backdrop-blur-md min-h-screen">
+        <main className="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Sidebar */}
+          <aside className="space-y-4">
+            <div className="p-4 border rounded-lg bg-red-100 shadow-md">
+              <h2 className="text-lg font-semibold mb-2">🔴 Severe Weather Alerts</h2>
+              <p className="text-sm text-red-800">No current alerts.</p>
+            </div>
+            <div className="p-4 border rounded-lg bg-blue-50 shadow-md">
+              <h2 className="text-lg font-semibold mb-2">📊 Weekly Trend</h2>
+              <p className="text-sm text-gray-700">Chart coming soon...</p>
+            </div>
+            <div className="p-4 border rounded-lg bg-green-50 shadow-md">
+              <h2 className="text-lg font-semibold mb-2">🌧 Rain Probability</h2>
+              <p className="text-sm text-gray-700">Today: 20% chance of rain</p>
+            </div>
+            <div className="p-4 border rounded-lg bg-yellow-50 shadow-md">
+              <h2 className="text-lg font-semibold mb-2">🔥 Hottest City</h2>
+              <p className="text-sm text-gray-700">Kuwait City — 44°C</p>
+            </div>
+            <div className="p-4 border rounded-lg bg-blue-100 shadow-md">
+              <h2 className="text-lg font-semibold mb-2">❄️ Coldest Capital</h2>
+              <p className="text-sm text-gray-700">Ulaanbaatar — -12°C</p>
+            </div>
+            <div className="p-4 border rounded-lg bg-purple-100 shadow-md">
+              <h2 className="text-lg font-semibold mb-2">💧 Most Humid Place</h2>
+              <p className="text-sm text-gray-700">Singapore — 95% humidity</p>
+            </div>
+          </aside>
 
-      {recentSearches.length > 0 && (
-        <div className="mb-6">
-          <h3 className="font-semibold text-gray-700 dark:text-gray-300 mb-1">Recent Searches:</h3>
-          <ul className="list-disc pl-5 text-sm text-gray-600 dark:text-gray-400">
-            {recentSearches.map((city, idx) => (
-              <li key={idx}>{city}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+          {/* Main content */}
+          <section className="col-span-2">
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Welcome, {userName || 'Clima'}</h1>
+              <button
+                onClick={toggleTheme}
+                className="bg-gray-800 dark:bg-white text-white dark:text-black px-4 py-2 rounded-md hover:opacity-90"
+              >
+                {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
+              </button>
+            </div>
 
-      {error && <p className="text-red-500">{error}</p>}
+            <div className="flex flex-col sm:flex-row gap-3 mb-6">
+              <input
+                type="text"
+                placeholder="Enter city name"
+                className="flex-grow px-4 py-2 border rounded-md"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+              />
+              <button
+                onClick={() => fetchWeather()}
+                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              >
+                Search
+              </button>
+              <button
+                onClick={handleUseMyLocation}
+                className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
+              >
+                📍 Use My Location
+              </button>
+            </div>
 
-      {weather && (
-        <div className="border p-4 rounded shadow text-center mb-6">
-          <h2 className="text-xl font-bold mb-2">
-            {weather.location.name}, {weather.location.country}
-          </h2>
-          <img
-            src={weather.current.condition.icon}
-            alt={weather.current.condition.text}
-            className="mx-auto"
-          />
-          <p className="text-lg">{weather.current.condition.text}</p>
-          
-          <p>🌡 Temp: {weather.current.temp_c}°C</p>
-          <p>💨 Wind: {weather.current.wind_kph} kph</p>
-          <p>💧 Humidity: {weather.current.humidity}%</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              {['New York', 'London', 'Tokyo', 'Mumbai'].map((cityName) => (
+                <PopularCityWeather key={cityName} city={cityName} />
+              ))}
+            </div>
 
-          
-        </div>
-      )}
-
-      {forecast.length > 0 && (
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-2">15-Day Forecast</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {forecast.map((day) => (
-              <div key={day.date} className="border rounded p-4 text-center bg-gray-100 dark:bg-gray-800">
-                <h4 className="font-bold text-sm mb-1">{day.date}</h4>
-                <img src={day.day.condition.icon} alt={day.day.condition.text} className="mx-auto" />
-                <p className="text-sm">{day.day.condition.text}</p>
-                <p className="text-sm">🌡 {day.day.avgtemp_c}°C</p>
+            {recentSearches.length > 0 && (
+              <div className="mb-4">
+                <h3 className="font-semibold text-gray-700 dark:text-gray-300 mb-1">Recent Searches:</h3>
+                <ul className="list-disc pl-5 text-sm text-gray-600 dark:text-gray-400">
+                  {recentSearches.map((city, idx) => (
+                    <li key={idx}>{city}</li>
+                  ))}
+                </ul>
               </div>
-            ))}
-          </div>
-        </div>
-      )}
+            )}
 
-      <p className="mt-6 italic text-center text-gray-600 dark:text-gray-400">{fact}</p>
-      </section>
+            {error && <p className="text-red-500 mb-4">{error}</p>}
 
-    <footer className="w-full col-span-3 bg-gray-100 dark:bg-gray-800 mt-10 py-4 px-6">
-      <h2 className="font-semibold text-sm mb-2 text-gray-700 dark:text-gray-300">🌍 Latest Weather News</h2>
-      <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-        <li>
-          <a href="https://www.bbc.com/weather" target="_blank" className="hover:underline">Weather updates from BBC</a>
-        </li>
-        <li>
-          <a href="https://edition.cnn.com/weather" target="_blank" className="hover:underline">Latest storm alerts from CNN</a>
-        </li>
-        <li>
-          <a href="https://www.accuweather.com/en/weather-news" target="_blank" className="hover:underline">Breaking news on global weather - AccuWeather</a>
-        </li>
-      </ul>
-    </footer>
-  </main>
+            {weather && (
+              <div className="border p-4 rounded-lg shadow-md text-center bg-gray-100 dark:bg-gray-900 mb-6">
+                <h2 className="text-xl font-bold mb-2">
+                  {weather.location.name}, {weather.location.country}
+                </h2>
+                <img src={weather.current.condition.icon} alt={weather.current.condition.text} className="mx-auto" />
+                <p className="text-lg">{weather.current.condition.text}</p>
+                <p>🌡 Temp: {weather.current.temp_c}°C</p>
+                <p>💨 Wind: {weather.current.wind_kph} kph</p>
+                <p>💧 Humidity: {weather.current.humidity}%</p>
+              </div>
+            )}
+
+            {forecast.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold mb-2">15-Day Forecast</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {forecast.map((day) => (
+                    <div key={day.date} className="border rounded-lg p-4 text-center bg-gray-100 dark:bg-gray-800 shadow">
+                      <h4 className="font-bold text-sm mb-1">{day.date}</h4>
+                      <img src={day.day.condition.icon} alt={day.day.condition.text} className="mx-auto" />
+                      <p className="text-sm">{day.day.condition.text}</p>
+                      <p className="text-sm">🌡 {day.day.avgtemp_c}°C</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <p className="mt-6 italic text-center text-gray-600 dark:text-gray-400">{fact}</p>
+          </section>
+
+          {/* Footer */}
+          <footer className="w-full col-span-3 bg-gray-100 dark:bg-gray-800 mt-10 py-4 px-6 rounded-xl shadow">
+            <h2 className="font-semibold text-sm mb-2 text-gray-700 dark:text-gray-300">🌍 Latest Weather News</h2>
+            <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+              <li>
+                <a href="https://www.bbc.com/weather" target="_blank" className="hover:underline">Weather updates from BBC</a>
+              </li>
+              <li>
+                <a href="https://edition.cnn.com/weather" target="_blank" className="hover:underline">Latest storm alerts from CNN</a>
+              </li>
+              <li>
+                <a href="https://www.accuweather.com/en/weather-news" target="_blank" className="hover:underline">Global weather – AccuWeather</a>
+              </li>
+            </ul>
+          </footer>
+        </main>
+      </div>
+    </div>
   );
 }
-

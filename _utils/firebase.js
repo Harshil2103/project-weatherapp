@@ -1,17 +1,17 @@
-// _utils/firebase.js
 
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey: "AIzaSyDOanTE2ZjL02krl26M8Xd67icqkrexceQ",
+  authDomain: "project-weatherapp.firebaseapp.com",
+  projectId: "project-weatherapp",
+  storageBucket: "project-weatherapp.appspot.com",
+  messagingSenderId: "353269176826",
+  appId: "1:353269176826:web:39b47e9fdd0bfd2fbd6c43"
 };
+
 
 const app = initializeApp(firebaseConfig);
 
