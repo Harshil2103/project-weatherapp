@@ -259,8 +259,8 @@ export default function HomePage() {
 
             {recentSearches.length > 0 && (
               <div className="mb-4">
-                <h3 className="font-semibold text-gray-700 dark:text-gray-300 mb-1">Recent Searches:</h3>
-                <ul className="list-disc pl-5 text-sm text-gray-600 dark:text-gray-400">
+                <h3 className="font-semibold text-gray-950 dark:text-gray-300 mb-1">Recent Searches:</h3>
+                <ul className="list-disc pl-5 text-sm text-gray-900 dark:text-gray-400">
                   {recentSearches.map((city, idx) => (
                     <li key={idx}>{city}</li>
                   ))}
@@ -299,7 +299,7 @@ export default function HomePage() {
               </div>
             )}
 
-            <p className="mt-6 text-center text-base text-gray-700 dark:text-gray-300 transition-all duration-300 italic">
+            <p className="mt-6 text-center text-base text-gray-950 dark:text-gray-300 transition-all duration-300 italic">
               🌈 Did you know? <span className="font-medium">{fact}</span>
             </p>
           </section>
