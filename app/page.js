@@ -93,7 +93,7 @@ export default function HomePage() {
     const interval = setInterval(() => {
       const newFact = facts[Math.floor(Math.random() * facts.length)];
       setFact(newFact);
-    }, 8000);
+    }, 8000); // rotate every 8 seconds
 
     return () => clearInterval(interval);
   }, []);
@@ -171,59 +171,44 @@ export default function HomePage() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      
-      <div
-        className="absolute inset-0 z-0 bg-cover bg-center"
-        style={{
-          backgroundImage: "url('/banff2.jpeg')",
-          filter: 'blur(2.5px)',
-          transform: 'scale(1.02)',
-        }}
-      />
+    <main className="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Left Sidebar */}
+      <aside className="space-y-4 pt-[56px]">
+        <div className="p-4 border rounded bg-red-100">
+          <h2 className="text-lg font-semibold mb-2">🔴 Severe Weather Alerts</h2>
+          <p className="text-sm text-red-800"><span>No current alerts.</span></p>
+        </div>
+        <div className="p-4 border rounded bg-blue-50">
+          <h2 className="text-lg font-semibold mb-2">📊 Weekly Trend</h2>
+          <p className="text-sm text-gray-700"><span>Chart coming soon...</span></p>
+        </div>
+        <div className="p-4 border rounded bg-green-50">
+          <h2 className="text-lg font-semibold mb-2">🌧 Rain Probability</h2>
+          <p className="text-sm text-gray-700">Today: 20% chance of rain</p>
+        </div>
 
-      {/* Foreground overlay content */}
-      <div className="relative z-10 bg-white/80 dark:bg-black/60 backdrop-blur-md min-h-screen">
-        <main className="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Sidebar */}
-          <aside className="space-y-4">
-            <div className="p-4 border rounded-lg bg-red-100 shadow-md">
-              <h2 className="text-lg font-semibold mb-2">🔴 Severe Weather Alerts</h2>
-              <p className="text-sm text-red-800">No current alerts.</p>
-            </div>
-            <div className="p-4 border rounded-lg bg-blue-50 shadow-md">
-              <h2 className="text-lg font-semibold mb-2">📊 Weekly Trend</h2>
-              <p className="text-sm text-gray-700">Chart coming soon...</p>
-            </div>
-            <div className="p-4 border rounded-lg bg-green-50 shadow-md">
-              <h2 className="text-lg font-semibold mb-2">🌧 Rain Probability</h2>
-              <p className="text-sm text-gray-700">Today: 20% chance of rain</p>
-            </div>
-            <div className="p-4 border rounded-lg bg-yellow-50 shadow-md">
-              <h2 className="text-lg font-semibold mb-2">🔥 Hottest City</h2>
-              <p className="text-sm text-gray-700">Kuwait City — 44°C</p>
-            </div>
-            <div className="p-4 border rounded-lg bg-blue-100 shadow-md">
-              <h2 className="text-lg font-semibold mb-2">❄️ Coldest Capital</h2>
-              <p className="text-sm text-gray-700">Ulaanbaatar — -12°C</p>
-            </div>
-            <div className="p-4 border rounded-lg bg-purple-100 shadow-md">
-              <h2 className="text-lg font-semibold mb-2">💧 Most Humid Place</h2>
-              <p className="text-sm text-gray-700">Singapore — 95% humidity</p>
-            </div>
-          </aside>
+        <div className="p-4 border rounded bg-yellow-50">
+          <h2 className="text-lg font-semibold mb-2">🔥 Hottest City</h2>
+          <p className="text-sm text-gray-700">Kuwait City — 44°C</p>
+        </div>
 
-          {/* Main content */}
-          <section className="col-span-2">
-            <div className="flex justify-between items-center mb-6">
-              <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Welcome, {userName || 'Clima'}</h1>
-              <button
-                onClick={toggleTheme}
-                className="bg-gray-800 dark:bg-white text-white dark:text-black px-4 py-2 rounded-md hover:opacity-90"
-              >
-                {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
-              </button>
-            </div>
+        <div className="p-4 border rounded bg-blue-100">
+          <h2 className="text-lg font-semibold mb-2">❄️ Coldest Capital</h2>
+          <p className="text-sm text-gray-700">Ulaanbaatar — -12°C</p>
+        </div>
+
+        <div className="p-4 border rounded bg-purple-100">
+          <h2 className="text-lg font-semibold mb-2">💧 Most Humid Place</h2>
+          <p className="text-sm text-gray-700">Singapore — 95% humidity</p>
+        </div>
+      </aside>
+
+      {/* Center Main Content */}
+      <section className="col-span-2">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-3xl font-bold">Welcome, {userName || 'Clima'}</h1>
+        
+      </div>
 
             <div className="flex flex-col sm:flex-row gap-3 mb-6">
               <input
@@ -247,11 +232,14 @@ export default function HomePage() {
               </button>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              {['New York', 'London', 'Tokyo', 'Mumbai'].map((cityName) => (
-                <PopularCityWeather key={cityName} city={cityName} />
-              ))}
-            </div>
+      
+
+      {/* Popular Cities Weather List */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        {['New York', 'London', 'Tokyo', 'Mumbai'].map((cityName) => (
+          <PopularCityWeather key={cityName} city={cityName} />
+        ))}
+      </div>
 
             {recentSearches.length > 0 && (
               <div className="mb-4">
